@@ -1,0 +1,16 @@
+{
+  "name": "Tanngrisnir-Tracker",
+  "version": "1.0.0",
+  "description": "Add the ability to read and log activities for strava users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.18.1",
+    "open": "0.0.5",
+    "strava-v3": "^1.12.1"
+  }
+}

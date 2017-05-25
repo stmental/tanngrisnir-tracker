@@ -1,0 +1,4 @@
+This directory contains configuration data for the strava app, specifically in the strava_config file.  
+In github, the contents of this file are encrypted to protect the client_secret property.  However,
+the if the password is known, the decrypt.js script can be used to decrypt the contents.  The 
+decrypted contents, minus the client secret, are available in the strava_config.bak file for reference.

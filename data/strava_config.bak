@@ -1,0 +1,7 @@
+
+{
+    "access_token"    :"8b419736a63978840c1216500a1e86d59586690c"
+    , "client_id"     :"17110"
+    , "client_secret" :""
+    , "redirect_uri"  :"http://localhost/token_exchange.php"
+}
