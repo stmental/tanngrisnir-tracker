@@ -8,7 +8,7 @@ var config = {
     accessToken: null,
     oauthCode: null
 }
-var configFile = 'userToken';
+var configFile = 'data/userToken';
 
 /**
  * Type 'node index.js help' to see this help
@@ -22,6 +22,8 @@ var printHelp = function(){
         console.log("This script will attempt to log a 1 minute 50 meter walk activity for every day of the current month");
         console.log("TO RUN, 'node index.js [userToken file]'")
         console.log("------------------------------------------------------------------------------------------------------");
+        console.log("userToken files should be located in the /data directory.")
+        console.log("If you accidentally request a new oauth code, delete the accessToken value from your userToken file, you'll need a new one generated");
         console.log("For more info on the strava API: http://strava.github.io/api/")
         console.log("For more info on the strava javascript API: https://www.npmjs.com/package/strava-v3")
         console.log("The data/strava_config file must be populated with data for the api (should come already populated, but can be changed if you have your own Strava app)")
@@ -31,9 +33,9 @@ var printHelp = function(){
         console.log("Grab the 'code' part of the resulting URL after the query string");
         console.log("This temp code is used to further authenticate to get an access token that will then be used for future queries");
         console.log("Example to get token (you need to know the app ID, secret and user's temp code), access token is returned with athlete info: ");
-        console.log("    curl -X POST https://www.strava.com/oauth/token -F client_id=17110 -F client_secret=c12e1f1e2403cbe07995cb16fa18d757099099b7 -F code=f65afaa496bffaa98ea03d58aba3058361e6c3bc ");
+        console.log("    curl -X POST https://www.strava.com/oauth/token -F client_id=17110 -F client_secret=39ff78e6a8999ce07995cb16fa18d757099099b7 -F code=387cb9e06a8ffaa98ea03d58aba3058361e6c3bc ");
         console.log("Example to post an activity using the access token:");
-        console.log("    curl -X POST https://www.strava.com/api/v3/activities -H 'Authorization: Bearer 4c0b53fab7513120dbbd9da883f7e3275e2a1495' -d name='Walk' -d type='Walk'  -d start_date_local='2017-05-17T12:00:00Z' -d elapsed_time=60 -d distance=50");
+        console.log("    curl -X POST https://www.strava.com/api/v3/activities -H 'Authorization: Bearer 59b7a8c6ee7ac820dbbd9da883f7e3275e2a1495' -d name='Walk' -d type='Walk'  -d start_date_local='2017-05-17T12:00:00Z' -d elapsed_time=60 -d distance=50");
         console.log("------------------------------------------------------------------------------------------------------");
         return true;
     }
@@ -58,6 +60,9 @@ var readFile = function() {
         // If a third argument was passed, assume it's the file name that contains just the user access token
         if (process.argv.length === 3 && process.argv[2]){
             configFile = process.argv[2];
+            // config files are stored in the data directory, so append that if it doesn't have it
+            if (!configFile.startsWith('data/'))
+                configFile = 'data/' + configFile;
             if (!fs.existsSync(configFile)) {
                 console.log(`ERROR: Could not find file (${configFile})`);
                 return;
@@ -86,6 +91,7 @@ var readFile = function() {
             }
         }
     } catch (err) {
+        console.log("Possible error reading file: "+err);
         // Config file does not exist. This may be a valid case if this
         // is the first time using this
     }
@@ -95,6 +101,7 @@ var readFile = function() {
  * Log a 1 minute 50 meter walk activity for every day of the current month
  */
 var logActivity = function(){
+    console.log("logActivity");
     var daysInMonth = moment().daysInMonth();
     var startOfMonth = moment().startOf('month').add(7, 'hours');
     var activityPromises =  [];
@@ -128,10 +135,15 @@ var getCode = function(){
     // Don't have a code, so open browser to run OAuth
     var url = strava.oauth.getRequestAccessURL({redirect_uri:"http://localhost/token_exchange.php", scope:"view_private,write"})
     open(url);
-    console.log('Login to opened URL, then copy the "code" part of the resulting URL query string to oauthCode value in the "userToken" file and run this again');
+    console.log('A new userToken file was crated in the /data directory.'), 
+    console.log('Login to opened URL (or copy URL below into a browser).  If you are already logged into strava from that browser,');
+    console.log('the URL will open a new "localhost" page looking something like');
+    console.log('http://localhost/token_exchange.php?state=&code=5673fa03e2cace79821d78d8096e42fa5f4d7768');
+    console.log('Copy the part of that URL after the "code=" to the new data/userToken file, as the value for the oauthCode node')
+    console.log('You may want to rename the data/userToken file');
+    console.log('Then run this code again, passing the name of the userToken file')
     console.log(url);
 }
-
 
 /**
  * Have a temporary oauth code, use it to get an access token
@@ -150,6 +162,7 @@ var getToken = function(){
                 config.accessToken = payload['access_token'];
                 console.log(`accessToken: ${config.accessToken}`)
                 saveFile();
+                logActivity();
             }
         }
     );
@@ -169,9 +182,6 @@ if (config.accessToken){
     if (config.oauthCode){
         // But do have an code, so just request the token
         getToken();
-        if (config.accessToken){
-            logActivity();
-        }
 
     }else{
         // Don't have a token, so open browser to run OAuth

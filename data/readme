@@ -2,3 +2,13 @@ This directory contains configuration data for the strava app, specifically in t
 In github, the contents of this file are encrypted to protect the client_secret property.  However,
 the if the password is known, the decrypt.js script can be used to decrypt the contents.  The 
 decrypted contents, minus the client secret, are available in the strava_config.bak file for reference.
+
+Additionally, if any files end with 'UserToken' those files should be encrypted as well before sharing
+this code.  It's assumed they contain private strava oauth info for users
+
+To use:
+In main directory, run 'npm install' to install dependencies
+
+In this directory, 
+To encrypt, run 'node encrypt [password] [filename]'
+To decrypt, run 'node decrypt [password] [filename]'
