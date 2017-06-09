@@ -101,7 +101,6 @@ var readFile = function() {
  * Log a 1 minute 50 meter walk activity for every day of the current month
  */
 var logActivity = function(){
-    console.log("logActivity");
     var daysInMonth = moment().daysInMonth();
     var startOfMonth = moment().startOf('month').add(7, 'hours');
     var activityPromises =  [];
