@@ -19,7 +19,7 @@ var printHelp = function(){
         console.log("Quick start:")
         console.log("To run, install node (and npm)");
         console.log("Change to this directory and run 'npm install' to install the required node modules");
-        console.log("This script will attempt to log a 1 minute 50 meter walk activity for every day of the current month");
+        console.log("This script will attempt to log a 1 minute 120 meter walk activity for every day of the current month");
         console.log("TO RUN, 'node index.js [userToken file]'")
         console.log("------------------------------------------------------------------------------------------------------");
         console.log("userToken files should be located in the /data directory.")
@@ -115,7 +115,7 @@ var logActivity = function(){
                 'type': 'Walk',
                 'start_date_local': startOfMonth.toDate().toISOString(),
                 'elapsed_time': 60,  //seconds
-                'distance': 50 // meters
+                'distance': 120 // meters
             };
             //console.log(args);
             var dayNum = i;
