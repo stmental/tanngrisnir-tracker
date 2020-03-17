@@ -22,3 +22,4 @@ npm-debug.log*
 # Distribution
 dist/
 !.npmrc
+data/dmfUserToken.bak
