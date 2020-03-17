@@ -1,7 +1,7 @@
 
 var fs = require('fs');
 var crypto = require('crypto');
-var shell = require('shelljs');
+//var shell = require('shelljs');
 
 var algorithm = 'aes-256-ctr';
 var fileName = 'strava_config';
@@ -26,7 +26,10 @@ function decrypt(text){
 var contents = fs.readFileSync(fileName, {encoding: 'utf-8'});
 var decrypted = decrypt(contents);
 //console.log(decrypted);
-fs.writeFile(fileName, decrypted);
+fs.writeFile(fileName, decrypted, (err) => {
+  if (err) throw err;
+  //console.log('The file has been saved!');
+});
 console.log(`Decrypted file ${fileName}`)
 
 // If any *userToken files exist, decrypt them too
