@@ -19,8 +19,9 @@ var printHelp = function(){
         console.log("Quick start:")
         console.log("To run, install node (and npm)");
         console.log("Change to this directory and run 'npm install' to install the required node modules");
-        console.log("This script will attempt to log a 1 minute 120 meter walk activity for every day of the current month");
-        console.log("TO RUN, 'node index.js [userToken file]'")
+        console.log("This script will attempt to log a 2 minute 240 meter walk activity for every day of the current month");
+        console.log("TO RUN, 'node index.js [userToken file] [number of month to log]'")
+        console.log("By default the activities will be logged for the current month unless the [number of month to log] argument is supplied (1-12)")
         console.log("------------------------------------------------------------------------------------------------------");
         console.log("userToken files should be located in the /data directory.")
         console.log("If you accidentally request a new oauth code, delete the accessToken value from your userToken file, you'll need a new one generated");
@@ -58,7 +59,7 @@ var readFile = function() {
         //console.dir(process.argv);
         // All command arguments are passed in process.argv array; first two are 'node' and [script]
         // If a third argument was passed, assume it's the file name that contains just the user access token
-        if (process.argv.length === 3 && process.argv[2]){
+        if (process.argv.length >= 3 && process.argv[2]){
             configFile = process.argv[2];
             // config files are stored in the data directory, so append that if it doesn't have it
             if (!configFile.startsWith('data/'))
@@ -98,11 +99,17 @@ var readFile = function() {
 };
 
 /**
- * Log a 1 minute 50 meter walk activity for every day of the current month
+ * Log a 2 minute 240 meter walk activity for every day of the current month
  */
 var logActivity = function(){
-    var daysInMonth = moment().daysInMonth();
-    var startOfMonth = moment().startOf('month').add(7, 'hours');
+    var monthToLogAsNumber = moment().month();
+    if (process.argv.length >= 4 && process.argv[3]){
+        // Log activity for the passed month (1-12).  JS Dates use zero-based months, so subtract 1
+        monthToLogAsNumber = parseInt(process.argv[3]) - 1;
+    }
+    var monthToLog  = moment([moment().year(), monthToLogAsNumber]);
+    var daysInMonth = monthToLog.daysInMonth();
+    var startOfMonth = monthToLog.startOf('month').add(7, 'hours');
     var activityPromises =  [];
     for(var i = 0; i < daysInMonth; i++){
         activityPromises.push = new Promise((resolve, reject) => {
@@ -114,8 +121,8 @@ var logActivity = function(){
                 'name': 'Walk',
                 'type': 'Walk',
                 'start_date_local': startOfMonth.toDate().toISOString(),
-                'elapsed_time': 60,  //seconds
-                'distance': 120 // meters
+                'elapsed_time': 120,  //seconds
+                'distance': 240 // meters
             };
             //console.log(args);
             var dayNum = i;
@@ -134,13 +141,13 @@ var getCode = function(){
     // Don't have a code, so open browser to run OAuth
     var url = strava.oauth.getRequestAccessURL({redirect_uri:"http://localhost/token_exchange.php", scope:"view_private,write"})
     open(url);
-    console.log('A new userToken file was crated in the /data directory.'), 
+    console.log('A new userToken file was created in the /data directory.'), 
     console.log('Login to opened URL (or copy URL below into a browser).  If you are already logged into strava from that browser,');
     console.log('the URL will open a new "localhost" page looking something like');
     console.log('http://localhost/token_exchange.php?state=&code=5673fa03e2cace79821d78d8096e42fa5f4d7768');
     console.log('Copy the part of that URL after the "code=" to the new data/userToken file, as the value for the oauthCode node')
     console.log('You may want to rename the data/userToken file');
-    console.log('Then run this code again, passing the name of the userToken file')
+    console.log('Then run this code again, passing the name of the userToken file (ex: node index.js data/userToken)')
     console.log(url);
 }
 

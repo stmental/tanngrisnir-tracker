@@ -12,3 +12,20 @@ In main directory, run 'npm install' to install dependencies
 In this directory, 
 To encrypt, run 'node encrypt [password] [filename]'
 To decrypt, run 'node decrypt [password] [filename]'
+
+The userToken files have a format like:
+
+{
+    "accessToken": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "oauthCode": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+
+The strava config should have a format like:
+
+
+{
+    "access_token"    :"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    , "client_id"     :"xxxxx"
+    , "client_secret" :""
+    , "redirect_uri"  :"http://localhost/token_exchange.php"
+}
