@@ -19,7 +19,7 @@ var printHelp = function(){
         console.log("Quick start:")
         console.log("To run, install node (and npm)");
         console.log("Change to this directory and run 'npm install' to install the required node modules");
-        console.log("This script will attempt to log a 2 minute 240 meter walk activity for every day of the current month");
+        console.log("This script will attempt to log a 15 minute 3km run activity for every day of the current month");
         console.log("TO RUN, 'node index.js [userToken file] [number of month to log]'")
         console.log("By default the activities will be logged for the current month unless the [number of month to log] argument is supplied (1-12)")
         console.log("------------------------------------------------------------------------------------------------------");
@@ -118,11 +118,11 @@ var logActivity = function(){
                 startOfMonth.add(1, 'days')  // original is mutated
             var args = {
                 'access_token': config.accessToken,
-                'name': 'Walk',
-                'type': 'Walk',
+                'name': 'Run',
+                'type': 'Run',
                 'start_date_local': startOfMonth.toDate().toISOString(),
-                'elapsed_time': 120,  //seconds
-                'distance': 240 // meters
+                'elapsed_time': 900,  //seconds
+                'distance': 3000 // meters
             };
             //console.log(args);
             var dayNum = i;
